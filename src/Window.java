@@ -13,6 +13,8 @@ public class Window extends JFrame implements Runnable {
     Graphics2D g2;
     KL keyListener = new KL();
 
+    Rect playerOne, ai, ball;
+
     public Window() {
         this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         this.setTitle(Constants.SCREEN_TITLE);
@@ -22,17 +24,19 @@ public class Window extends JFrame implements Runnable {
         this.addKeyListener(keyListener);
 
         g2 = (Graphics2D)this.getGraphics();
+
+        playerOne = new Rect(Constants.HZ_PADDING, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
+        ai = new Rect(Constants.SCREEN_WIDTH - Constants.PADDLE_WIDTH - Constants.HZ_PADDING, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
+        ball = new Rect(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2, Constants.BALL_WIDTH, Constants.BALL_WIDTH, Constants.PADDLE_COLOR);
     }
 
     public void update(double dt) {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 
-        if (keyListener.isKeyPressed(KeyEvent.VK_UP)) {
-            System.out.println("UP");
-        } else if (keyListener.isKeyPressed(KeyEvent.VK_DOWN)) {
-            System.out.println("DOWN");
-        }
+        playerOne.draw(g2);
+        ai.draw(g2);
+        ball.draw(g2);
     }
 
     public void run() {
