@@ -1,13 +1,17 @@
 package src;
 
 import javax.swing.JFrame;
+
 import java.awt.Graphics2D;
 import java.awt.Color;
+
+import java.awt.event.KeyEvent;
 
 
 public class Window extends JFrame implements Runnable {
 
     Graphics2D g2;
+    KL keyListener = new KL();
 
     public Window() {
         this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
@@ -15,6 +19,7 @@ public class Window extends JFrame implements Runnable {
         this.setResizable(false);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.addKeyListener(keyListener);
 
         g2 = (Graphics2D)this.getGraphics();
     }
@@ -22,6 +27,12 @@ public class Window extends JFrame implements Runnable {
     public void update(double dt) {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+
+        if (keyListener.isKeyPressed(KeyEvent.VK_UP)) {
+            System.out.println("UP");
+        } else if (keyListener.isKeyPressed(KeyEvent.VK_DOWN)) {
+            System.out.println("DOWN");
+        }
     }
 
     public void run() {
