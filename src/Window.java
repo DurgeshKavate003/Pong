@@ -3,17 +3,21 @@ package src;
 import javax.swing.JFrame;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Graphics;
 import java.awt.Color;
+
 
 import java.awt.event.KeyEvent;
 
 
 public class Window extends JFrame implements Runnable {
 
-    Graphics2D g2;
-    KL keyListener = new KL();
+    public Graphics2D g2;
 
-    Rect playerOne, ai, ball;
+    public KL keyListener = new KL();
+    public Rect playerOne, ai, ball;
+    public PlayerController playerController;
 
     public Window() {
         this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
@@ -23,14 +27,34 @@ public class Window extends JFrame implements Runnable {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addKeyListener(keyListener);
 
+        Constants.TOOLBAR_HEIGHT = this.getInsets().top;
+        Constants.INSETS_BOTTOM = this.getInsets().bottom;
+
         g2 = (Graphics2D)this.getGraphics();
 
         playerOne = new Rect(Constants.HZ_PADDING, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
+        playerController = new PlayerController(playerOne, keyListener);
+
         ai = new Rect(Constants.SCREEN_WIDTH - Constants.PADDLE_WIDTH - Constants.HZ_PADDING, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
         ball = new Rect(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2, Constants.BALL_WIDTH, Constants.BALL_WIDTH, Constants.PADDLE_COLOR);
     }
 
     public void update(double dt) {
+        Image dbImage = createImage(getWidth(), getHeight());
+        Graphics dbg = dbImage.getGraphics();
+        this.draw(dbg);
+        g2.drawImage(dbImage, 0, 0, this);
+
+        playerController.update(dt);
+
+        playerOne.draw(g2);
+        ai.draw(g2);
+        ball.draw(g2);
+    }
+
+    public void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D)g;
+
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 
@@ -47,12 +71,6 @@ public class Window extends JFrame implements Runnable {
             lastFrameTime = time;
 
             update(deltaTime);
-
-            try {
-                Thread.sleep(30);
-            } catch (Exception e){
-
-            }
         }
     }
 }
